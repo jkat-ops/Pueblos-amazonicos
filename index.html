@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Viaje Cultural — Explorador de las culturas amazónicas</title>
+<style>
+:root{
+  --bg:#f6efe6;
+  --panel:#e9dccb;
+  --accent:#6a3f1a;
+  --muted:#4a2f1a;
+  --leaf:#2a6f4a;
+  --card:#fff6ee;
+}
+*{box-sizing:border-box;font-family: "Noto Sans", "Segoe UI", Roboto, sans-serif;}
+body{margin:0;background:linear-gradient(180deg,#efe9df,var(--panel));color:var(--muted);min-height:100vh}
+header{padding:20px 28px;display:flex;align-items:center;gap:16px;border-bottom:6px solid rgba(42,111,74,0.08)}
+.logo{width:68px;height:68px;border-radius:12px;background:linear-gradient(135deg,#2a6f4a,#5aa77a);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;box-shadow:0 6px 18px rgba(42,111,74,0.18)}
+h1{margin:0;font-size:22px;letter-spacing:0.2px}
+.lead{margin:0;color:var(--muted);opacity:0.9}
+main{display:grid;grid-template-columns:360px 1fr;gap:18px;padding:18px}
+.sidebar{background:var(--card);padding:14px;border-radius:12px;height:calc(100vh - 140px);overflow:auto;border:1px solid rgba(42,111,74,0.06)}
+.stage{display:flex;flex-direction:column;gap:12px}
+.pin{background:linear-gradient(180deg,#fff,#f7efe4);border:1px solid rgba(42,111,74,0.06);padding:10px;border-radius:10px;cursor:pointer;display:flex;gap:10px;align-items:center}
+.pin img{width:64px;height:56px;border-radius:6px;object-fit:cover;border:3px solid rgba(106,63,26,0.06)}
+.pin h3{margin:0;font-size:15px;color:var(--leaf)}
+.pin p{margin:0;font-size:13px;color:var(--muted)}
+.mapwrap{background:linear-gradient(180deg,#fefaf6,#fffaf0);padding:18px;border-radius:12px;min-height:70vh;border:1px solid rgba(42,111,74,0.04)}
+.map{background-image:
+  radial-gradient(circle at 10% 20%, rgba(42,111,74,0.06), transparent 20%),
+  radial-gradient(circle at 80% 60%, rgba(106,63,26,0.03), transparent 18%);
+  border-radius:10px;position:relative;padding:12px;min-height:520px}
+.marker{position:absolute;background:linear-gradient(180deg,#ffdca8,#ffe6c9);color:var(--accent);padding:8px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.08);display:flex;align-items:center;gap:8px;cursor:pointer;border:2px solid rgba(42,111,74,0.03)}
+.hud{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+.score{background:rgba(42,111,74,0.06);padding:10px;border-radius:10px;min-width:160px;color:var(--muted)}
+.progress{height:12px;background:rgba(42,111,74,0.06);border-radius:12px;overflow:hidden}
+.progress > i{display:block;height:100%;background:linear-gradient(90deg,#89e6a6,#1fc07c)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:60}
+.card{background:var(--card);padding:18px;border-radius:12px;max-width:960px;color:var(--muted);box-shadow:0 10px 30px rgba(0,0,0,0.12)}
+.grid{display:grid;grid-template-columns:260px 1fr;gap:12px}
+.media img{width:100%;border-radius:8px;display:block;border:4px solid rgba(42,111,74,0.03)}
+.facts{font-size:14px;line-height:1.5}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.tag{background:linear-gradient(180deg,#fff8f2,#fff1e0);padding:6px 8px;border-radius:8px;font-size:13px;border:1px solid rgba(42,111,74,0.03)}
+.btn{background:linear-gradient(90deg,#2a6f4a,#5aa77a);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;box-shadow:0 8px 18px rgba(42,111,74,0.12)}
+.smallbtn{background:transparent;border:1px solid rgba(42,111,74,0.12);padding:8px 10px;border-radius:8px;cursor:pointer}
+.section-title{font-weight:700;color:var(--accent);margin-bottom:8px}
+.minigame{background:#fff7f0;border-radius:10px;padding:10px;margin-top:10px;border:1px solid rgba(42,111,74,0.03)}
+.quiz q{display:block;font-style:normal;margin:8px 0;padding:8px 10px;border-radius:8px;background:linear-gradient(90deg,#fff,#fff5ef)}
+.match-grid{display:flex;gap:12px;align-items:flex-start}
+.match-col{flex:1;padding:6px;border-radius:8px;min-height:160px;background:linear-gradient(180deg,#fff,#fff9f4);border:1px dashed rgba(42,111,74,0.04)}
+.match-item{padding:8px;margin:6px;border-radius:8px;background:#fff;border:1px solid rgba(42,111,74,0.04);cursor:grab}
+.tf{display:flex;gap:8px;align-items:center;margin:6px 0}
+.footer{padding:12px 28px;color:var(--muted);font-size:13px}
+.certificate{background:#fff;color:var(--accent);padding:18px;border-radius:12px;display:inline-block}
+.badge{display:inline-block;padding:6px 10px;border-radius:10px;background:linear-gradient(180deg,#e9decf,#fffaf2);border:1px solid rgba(42,111,74,0.04);color:var(--leaf);font-weight:700}
+@media (max-width:900px){main{grid-template-columns:1fr;padding:12px}.sidebar{height:auto}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">RAÍZ</div>
+  <div>
+    <h1>Viaje Cultural — Explorador de las culturas amazónicas</h1>
+    <p class="lead">Estética tradicional amazónica — Explora, juega y obtén tu certificado</p>
+  </div>
+</header>
+<main>
+  <aside class="sidebar">
+    <section class="stage">
+      <div class="hud">
+        <div class="score"><strong>Puntos:</strong> <span id="score">0</span></div>
+        <div class="score"><strong>Logros:</strong> <span id="badges">0</span></div>
+      </div>
+      <div>
+        <h3 class="section-title">Paradas del viaje</h3>
+        <div id="pins"></div>
+      </div>
+      <hr>
+      <div>
+        <h3 class="section-title">Progreso</h3>
+        <div class="progress" aria-hidden><i id="progressBar" style="width:0%"></i></div>
+      </div>
+      <hr>
+      <div>
+        <h3 class="section-title">Logros</h3>
+        <div id="achList"></div>
+      </div>
+      <hr>
+      <div>
+        <button class="btn" id="showCertificate">Ver tarjeta / certificado</button>
+        <button class="smallbtn" id="downloadHTML" style="margin-left:8px">Descargar index.html</button>
+      </div>
+    </section>
+  </aside>
+  <section class="mapwrap">
+    <div class="map" id="map">
+      <div class="hud" style="position:relative;z-index:2">
+        <div style="flex:1;"><strong>Mapa del Viaje</strong> — haz clic en un marcador para explorar</div>
+      </div>
+      <!-- markers injected by JS -->
+    </div>
+  </section>
+</main>
+
+<!-- Modal for stop -->
+<div class="modal" id="modal">
+  <div class="card" role="dialog" aria-modal="true">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <h2 id="modalTitle">Nombre</h2>
+      <div>
+        <button class="smallbtn" id="closeModal">Cerrar</button>
+      </div>
+    </div>
+    <div class="grid" style="margin-top:12px">
+      <div class="media"><img id="modalImg" src="" alt="foto"></div>
+      <div>
+        <div class="facts" id="modalContent"></div>
+        <div class="tags" id="modalTags"></div>
+
+        <div style="margin-top:12px">
+          <h3 class="section-title">Mini-juegos</h3>
+
+          <div id="gamesArea"></div>
+
+          <div style="margin-top:10px">
+            <button class="btn" id="collectBtn">Recolectar logro de esta parada</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Certificate modal -->
+<div class="modal" id="certModal">
+  <div class="card" style="max-width:720px;text-align:center">
+    <h2>Tarjeta y Certificado</h2>
+    <div style="margin:12px 0;padding:12px;background:linear-gradient(90deg,#fff8f2,#fff1e0);border-radius:12px;color:var(--leaf);display:inline-block">
+      <div class="certificate" id="cardPreview">Puntos: <strong id="cardPoints">0</strong><br>Logros: <strong id="cardBadges">0</strong></div>
+    </div>
+    <div style="margin-top:12px">
+      <button class="btn" id="downloadCert">Descargar certificado (PNG)</button>
+      <button class="btn" id="closeCert" style="margin-left:8px">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  Diseño tradicional amazónico — Respeto y cuidado al usar imágenes y contenidos culturales.
+</footer>
+
+<script>
+// --- Data for stops with expanded content and mini-games ---
+const STOPS = [
+  {
+    id: 'yanomami',
+    name: 'Yanomamis',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Yanomami_Woman_%26_Child.jpg',
+    tags: ['alimentación','medicina','lengua','vivienda','vestimenta','caza','pintura','herramientas','fiestas'],
+    desc: `Alimentación: dieta basada en pesca (ríos), caza (mamíferos y aves), y cultivos como la yuca. También consumen frutos y, en algunos casos, insectos como proteína. 
+Medicina: chamanes utilizan plantas medicinales y prácticas ceremoniales. 
+Lengua: múltiples variedades de idiomas yanomami; fuerte tradición oral. 
+Vivienda: malocas comunales grandes que alojan a varias familias y sirven para rituales. 
+Vestimenta: hoy combinan ropa moderna con adornos tradicionales; uso intenso de pintura corporal ritual. 
+Herramientas: arcos y flechas, lanzas, cestas, utensilios de madera para cocinar. 
+Fiestas: rituales de curación, celebraciones de la comunidad.`
+  },
+  {
+    id: 'piaroa',
+    name: 'Piaroa',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/1/17/Churuata_Piaroa.jpg',
+    tags: ['vivienda','lengua','alimentación','herramientas'],
+    desc: `Alimentación: yuca, pescados, frutas silvestres; dieta basada en recursos de río y monte. 
+Medicina: conocimientos botánicos para remedios locales. 
+Lengua: piaroa, con tradición oral y mitologías. 
+Vivienda: churuatas y espacios comunales. 
+Herramientas: utensilios de madera, morteros y herramientas de pesca.`
+  },
+  {
+    id: 'guarani',
+    name: 'Guaraníes',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/0/09/Guarani_Family.JPG',
+    tags: ['lengua','alimentación','fiestas','vivienda'],
+    desc: `Alimentación: mandioca (yuca), maíz, pesca y caza; platos tradicionales a base de mandioca. 
+Medicina: uso de plantas medicinales y adaptación a servicios de salud actuales. 
+Lengua: el guaraní es hablado por millones; enorme presencia cultural. 
+Vivienda: desde viviendas tradicionales a adaptaciones modernas según la región. 
+Fiestas: rituales, cantos y danzas comunitarias.`
+  },
+  {
+    id: 'pemon',
+    name: 'Pemón',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/9/9b/Pemon_indigenous_people.jpg',
+    tags: ['medicina','lengua','vivienda','alimentación'],
+    desc: `Alimentación: pesca, recolección y cultivos; alimentos tradicionales se mantienen. 
+Medicina: curanderos y uso de plantas; coexistencia con salud pública. 
+Lengua: pemón con variantes locales. 
+Vivienda: casas comunitarias y adaptaciones modernas.`
+  },
+  {
+    id: 'kayapo',
+    name: 'Cayapós (Kayapó)',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Kayapo_woman_and_child.jpg',
+    tags: ['vestimenta','pintura','fiestas','caza','herramientas'],
+    desc: `Alimentación: agricultura (yuca, maíz), pesca y caza. 
+Medicina: extensivo conocimiento de plantas medicinales. 
+Vestimenta: conocidos por elaboradas pinturas corporales, cocares y ornamentos. 
+Pintura: diseños corporales muy simbólicos y significativos. 
+Fiestas: grandes ceremonias y encuentros intercomunales.`
+  },
+  {
+    id: 'nambikwara',
+    name: 'Nambikwara',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/3/35/Piaroa_Indianer.JPG',
+    tags: ['caza','lengua','herramientas','vivienda'],
+    desc: `Alimentación: caza, recolección y cultivos locales, técnica de subsistencia. 
+Medicina: saberes de plantas curativas. 
+Lengua: varias lenguas nambikwara; diversidad lingüística. 
+Herramientas: arpones, lanzas y utensilios simples; vivienda adaptada al entorno.`
+  },
+  {
+    id: 'pemones',
+    name: 'Pemones (segunda área)',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/2/22/Pemon.jpg',
+    tags: ['lengua','fiestas','herramientas','alimentación'],
+    desc: `Alimentos y costumbres variados; uso de instrumentos locales y celebraciones tradicionales.`
+  }
+];
+
+// Achievements
+const ACHIEVEMENTS = [
+  {id:'first-stop', title:'Primer encuentro', desc:'Visita tu primera parada', points:10},
+  {id:'four-stops', title:'Explorador en progreso', desc:'Visita 4 paradas', points:40},
+  {id:'all-stops', title:'Conocedor amazónico', desc:'Visita todas las paradas', points:100},
+  {id:'culture-savant', title:'Sabio cultural', desc:'Recolecta 5 logros', points:80}
+];
+
+// State
+let state = { score:0, badges:[], visited:new Set(), stopProgress:{} };
+
+// Render pins and markers
+const pinsDiv = document.getElementById('pins');
+const map = document.getElementById('map');
+
+STOPS.forEach((s, idx)=>{
+  const pin = document.createElement('div'); pin.className='pin';
+  pin.innerHTML = `<img src="${s.img}" alt=""><div><h3>${s.name}</h3><p>${s.tags.join(' • ')}</p></div>`;
+  pin.addEventListener('click', ()=>openStop(s));
+  pinsDiv.appendChild(pin);
+
+  const mark = document.createElement('div'); mark.className='marker';
+  // distribute markers roughly
+  const left = 6 + (idx*12) + '%';
+  const top = 12 + ((idx%3)*18) + '%';
+  mark.style.left = left; mark.style.top = top; mark.style.position='absolute';
+  mark.innerHTML = `<strong>${s.name}</strong>`;
+  mark.addEventListener('click', ()=>openStop(s));
+  map.appendChild(mark);
+
+  state.stopProgress[s.id] = { quizDone:false, matchDone:false, tfDone:false };
+});
+
+// Achievements UI
+const achList = document.getElementById('achList');
+ACHIEVEMENTS.forEach(a=>{
+  const el = document.createElement('div'); el.className='tag'; el.id='ach-'+a.id; el.textContent = a.title; achList.appendChild(el);
+});
+
+// Modal elements
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modalTitle');
+const modalImg = document.getElementById('modalImg');
+const modalContent = document.getElementById('modalContent');
+const modalTags = document.getElementById('modalTags');
+const gamesArea = document.getElementById('gamesArea');
+const collectBtn = document.getElementById('collectBtn');
+
+function openStop(s){
+  modalTitle.textContent = s.name;
+  modalImg.src = s.img;
+  modalContent.textContent = s.desc;
+  modalTags.innerHTML = '';
+  s.tags.forEach(t=>{ const d=document.createElement('div'); d.className='tag'; d.textContent=t; modalTags.appendChild(d); });
+
+  // render mini-games: quiz (3 q), match (3 items), tf (3)
+  gamesArea.innerHTML = '';
+
+  // Quiz
+  const quizBox = document.createElement('div'); quizBox.className='minigame';
+  quizBox.innerHTML = `<div style="font-weight:700">Quiz rápido</div><div class="quiz" id="quiz-${s.id}"></div>`;
+  gamesArea.appendChild(quizBox);
+  const quizDiv = quizBox.querySelector(`#quiz-${s.id}`);
+  const quizQs = makeQuizQuestions(s);
+  quizQs.forEach((q,qi)=>{
+    const qEl = document.createElement('div');
+    qEl.innerHTML = `<q>${q.q}</q>`;
+    q.options.forEach((opt,oi)=>{
+      const idc = `q-${s.id}-${qi}-${oi}`;
+      const radio = `<label style="display:block;margin:6px 0"><input type="radio" name="q-${s.id}-${qi}" value="${oi}" id="${idc}"> ${opt}</label>`;
+      qEl.insertAdjacentHTML('beforeend', radio);
+    });
+    quizDiv.appendChild(qEl);
+  });
+  const submitQuiz = document.createElement('button'); submitQuiz.className='smallbtn'; submitQuiz.textContent='Enviar respuestas (Quiz)';
+  submitQuiz.onclick = ()=>submitQuizAnswers(s,quizQs);
+  quizBox.appendChild(submitQuiz);
+
+  // Match (drag-drop)
+  const matchBox = document.createElement('div'); matchBox.className='minigame';
+  matchBox.innerHTML = `<div style="font-weight:700">Emparejar imágenes y conceptos</div><div class="match-grid"><div class="match-col" id="match-left-${s.id}"></div><div class="match-col" id="match-right-${s.id}"></div></div>`;
+  gamesArea.appendChild(matchBox);
+  const pairs = makeMatchPairs(s);
+  const left = document.getElementById(`match-left-${s.id}`);
+  const right = document.getElementById(`match-right-${s.id}`);
+  // left: images
+  pairs.forEach((p, i)=>{
+    const it = document.createElement('div'); it.className='match-item'; it.draggable = true; it.id = `m-${s.id}-${i}`;
+    it.innerHTML = `<div style="font-size:13px;font-weight:700">${i+1}. <span style="font-weight:600">${p.labelShort}</span></div><div style="margin-top:6px"><img src="${p.img}" style="max-width:100%;border-radius:6px;border:1px solid rgba(42,111,74,0.03)"></div>`;
+    it.addEventListener('dragstart', (ev)=>{ ev.dataTransfer.setData('text/plain', ev.target.id); });
+    left.appendChild(it);
+  });
+  // right: target names in random order
+  const shuffled = pairs.map((p,i)=>({i,label:p.match})).sort(()=>Math.random()-0.5);
+  shuffled.forEach(sv=>{
+    const t = document.createElement('div'); t.className='match-item'; t.id=`target-${s.id}-${sv.i}`; t.textContent = sv.label;
+    t.addEventListener('dragover',(e)=>e.preventDefault());
+    t.addEventListener('drop',(e)=>{ e.preventDefault(); const idd = e.dataTransfer.getData('text/plain'); const dragged = document.getElementById(idd);
+        if(dragged){ e.target.appendChild(dragged); dragged.style.margin='6px 0'; } });
+    right.appendChild(t);
+  });
+  const checkMatchBtn = document.createElement('button'); checkMatchBtn.className='smallbtn'; checkMatchBtn.textContent='Comprobar emparejamientos';
+  checkMatchBtn.onclick = ()=>checkMatches(s,pairs);
+  matchBox.appendChild(checkMatchBtn);
+
+  // True/False
+  const tfBox = document.createElement('div'); tfBox.className='minigame';
+  tfBox.innerHTML = `<div style="font-weight:700">Verdadero o Falso</div><div id="tf-${s.id}"></div>`;
+  gamesArea.appendChild(tfBox);
+  const tfQs = makeTFQuestions(s);
+  const tfDiv = document.getElementById(`tf-${s.id}`);
+  tfQs.forEach((tq,i)=>{
+    const d = document.createElement('div'); d.className='tf';
+    d.innerHTML = `<div style="flex:1">${tq.q}</div><div><button class="smallbtn" data-val="true" id="tf-${s.id}-${i}-true">V</button> <button class="smallbtn" data-val="false" id="tf-${s.id}-${i}-false">F</button></div>`;
+    tfDiv.appendChild(d);
+    // handlers
+    d.querySelectorAll('button').forEach(btn=>{
+      btn.onclick = ()=>{ const val = btn.getAttribute('data-val')==='true'; btn.style.background='#f0f0f0'; submitTFAnswer(s,i,val); };
+    });
+  });
+
+  // mark games area reset
+  modal.style.display='flex';
+}
+
+// helper to create quiz questions (3) per stop
+function makeQuizQuestions(s){
+  // generic templates with some specific choices
+  const qlist = [];
+  // q1: alimentación
+  qlist.push({
+    q: `¿Cuál de estos es un alimento tradicional asociado a ${s.name}?`,
+    options: ['Arroz blanco','Yuca (mandioca)','Papas fritas'],
+    answer: 1
+  });
+  // q2: herramientas
+  qlist.push({
+    q: `¿Qué herramienta es común en prácticas de caza o pesca tradicionales?`,
+    options: ['Arco y flechas','Aspiradora','Sierra eléctrica'],
+    answer: 0
+  });
+  // q3: costumbres
+  qlist.push({
+    q: `¿Qué elemento cultural es frecuente en ceremonias tradicionales?`,
+    options: ['Pintura corporal y cantos','Comida rápida','Películas modernas'],
+    answer: 0
+  });
+  return qlist;
+}
+
+// submit quiz answers
+function submitQuizAnswers(s, quizQs){
+  if(state.stopProgress[s.id].quizDone){ alert('Ya completaste el quiz de esta parada.'); return; }
+  let correct=0;
+  quizQs.forEach((q,qi)=>{
+    const radios = document.getElementsByName(`q-${s.id}-${qi}`);
+    let chosen = null;
+    for(const r of radios){ if(r.checked){ chosen = parseInt(r.value); break; } }
+    if(chosen===q.answer) correct++;
+  });
+  const pts = correct * 10;
+  state.score += pts;
+  state.stopProgress[s.id].quizDone = true;
+  if(correct>0) state.badges.push({id:`${s.id}-quiz`, title:`Quiz ${s.name}`, points:pts});
+  updateHUD();
+  alert(`Quiz completado: ${correct} aciertos — +${pts} pts`);
+  checkMilestones();
+}
+
+// make match pairs (3) per stop: return array of {img,label,match,labelShort}
+function makeMatchPairs(s){
+  // generic examples but images chosen to illustrate tools/foods; use some community images where possible
+  const examples = [
+    {label:'Yuca', img:'https://upload.wikimedia.org/wikipedia/commons/1/12/Manihot_esculenta_%28cassava%29.jpg', labelShort:'Yuca', match:'Yuca'},
+    {label:'Arco', img:'https://upload.wikimedia.org/wikipedia/commons/4/4f/Bow_and_arrows.jpg', labelShort:'Arco', match:'Arco y flechas'},
+    {label:'Cesta', img:'https://upload.wikimedia.org/wikipedia/commons/4/49/Indigenous_basket.jpg', labelShort:'Cesta', match:'Cesta de fibra'}
+  ];
+  // shuffle and take 3
+  return examples.sort(()=>Math.random()-0.5).slice(0,3);
+}
+
+function checkMatches(s,pairs){
+  if(state.stopProgress[s.id].matchDone){ alert('Ya comprobaste emparejamientos en esta parada.'); return; }
+  let correct=0;
+  pairs.forEach((p,i)=>{
+    const target = document.getElementById(`target-${s.id}-${i}`);
+    // if the target contains the dragged item with id m-...
+    if(target && target.querySelector(`#m-${s.id}-${i}`)) correct++;
+  });
+  const pts = correct * 5;
+  state.score += pts;
+  state.stopProgress[s.id].matchDone = true;
+  if(correct>0) state.badges.push({id:`${s.id}-match`, title:`Emparejar ${s.name}`, points:pts});
+  updateHUD();
+  alert(`Emparejamientos correctos: ${correct} — +${pts} pts`);
+  checkMilestones();
+}
+
+// TF questions creator (3)
+function makeTFQuestions(s){
+  return [
+    {q:`En ${s.name} se practica la pintura corporal en ceremonias.`, a:true},
+    {q:`La alimentación tradicional suele basarse en productos locales como la yuca.`, a:true},
+    {q:`Todas las comunidades usan tecnología industrial como principal forma de vida.`, a:false}
+  ];
+}
+
+function submitTFAnswer(s,index,val){
+  if(state.stopProgress[s.id].tfDone===true){
+    // allow answering individually but prevent re-scoring same question by marking store
+  }
+  // for simplicity allow each TF to be scored once per stop; record by expanding array
+  if(!state.stopProgress[s.id].tfAnswered) state.stopProgress[s.id].tfAnswered = new Set();
+  if(state.stopProgress[s.id].tfAnswered.has(index)){ alert('Ya respondiste esa afirmación.'); return; }
+  const q = makeTFQuestions(s)[index];
+  if(val === q.a){
+    state.score += 10;
+    state.badges.push({id:`${s.id}-tf-${index}`, title:`TF ${s.name} #${index+1}`, points:10});
+    alert('Respuesta correcta +10 pts');
+  } else {
+    alert('Respuesta incorrecta');
+  }
+  state.stopProgress[s.id].tfAnswered.add(index);
+  updateHUD();
+  checkMilestones();
+}
+
+// collect stop achievement (after trying mini-games, but can be collected anytime)
+collectBtn.onclick = ()=>{
+  const sname = modalTitle.textContent;
+  const s = STOPS.find(x=>x.name===sname);
+  if(!s) return;
+  if(state.visited.has(s.id)){ alert('Ya recolectaste el logro de esta parada.'); return; }
+  // reward based on games done
+  const progress = state.stopProgress[s.id];
+  let pts = 20; // base for visiting
+  if(progress.quizDone) pts += 15;
+  if(progress.matchDone) pts += 10;
+  if(progress.tfAnswered) pts += (progress.tfAnswered.size * 5);
+  state.score += pts;
+  state.visited.add(s.id);
+  state.badges.push({id:`${s.id}-visit`, title:`Visita ${s.name}`, points:pts});
+  updateHUD();
+  modal.style.display='none';
+  alert(`Has recolectado el logro de ${s.name} — +${pts} pts`);
+  checkMilestones();
+};
+
+// Achievements checking
+function checkMilestones(){
+  const v = state.visited.size;
+  if(v>=1) unlockAchievement('first-stop');
+  if(v>=4) unlockAchievement('four-stops');
+  if(v===STOPS.length) unlockAchievement('all-stops');
+  if(state.badges.length>=5) unlockAchievement('culture-savant');
+}
+
+function unlockAchievement(id){
+  const a = ACHIEVEMENTS.find(x=>x.id===id);
+  if(!a) return;
+  if(state.badges.find(b=>b.id==='ach-'+id)) return;
+  state.badges.push({id:'ach-'+id,title:a.title,points:a.points});
+  state.score += a.points;
+  const el = document.getElementById('ach-'+id);
+  if(el){ el.style.background='linear-gradient(90deg,#ffdca8,#ffe6c9)'; el.style.color='#533311'; el.style.border='1px solid rgba(42,111,74,0.06)'; }
+  updateHUD();
+}
+
+// HUD update
+function updateHUD(){
+  document.getElementById('score').textContent = state.score;
+  document.getElementById('badges').textContent = state.badges.length;
+  const percent = Math.round((state.visited.size / STOPS.length) * 100);
+  document.getElementById('progressBar').style.width = percent + '%';
+  document.getElementById('cardPoints').textContent = state.score;
+  document.getElementById('cardBadges').textContent = state.badges.length;
+}
+
+// Modal close
+document.getElementById('closeModal').onclick = ()=>{ modal.style.display='none'; }
+document.querySelectorAll('.modal').forEach(m=>{ m.addEventListener('click', (e)=>{ if(e.target===m) m.style.display='none'; }) });
+
+// Certificate modal
+const certModal = document.getElementById('certModal');
+document.getElementById('showCertificate').onclick = ()=>{
+  const n = prompt('Nombre del(a) estudiante para el certificado:', '');
+  if(n) window.promptName = n;
+  certModal.style.display='flex';
+};
+document.getElementById('closeCert').onclick = ()=> certModal.style.display='none';
+
+// generate certificate png
+document.getElementById('downloadCert').onclick = async ()=>{
+  const url = await generateCertificateImage();
+  const a = document.createElement('a'); a.href = url; a.download = 'Certificado_Explorador_Amazonia.png'; a.click();
+};
+
+async function generateCertificateImage(){
+  const w=1200,h=800;
+  const c = document.createElement('canvas'); c.width=w; c.height=h; const ctx=c.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,w,h); grad.addColorStop(0,'#fff8f2'); grad.addColorStop(1,'#eaf5ec');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle='#2a6f4a'; ctx.font='bold 36px serif'; ctx.textAlign='center';
+  ctx.fillText('Certificado de Explorador de las culturas amazónicas', w/2,100);
+  ctx.fillStyle='#6a3f1a'; ctx.font='28px serif';
+  ctx.fillText('Alumno: ' + (window.promptName || 'Estudiante'), w/2,170);
+  ctx.font='22px serif'; ctx.fillText('Puntos: ' + state.score + ' — Logros: ' + state.badges.length, w/2,210);
+  ctx.textAlign='left'; ctx.font='20px monospace'; ctx.fillText('Logros obtenidos:', 80,280);
+  state.badges.forEach((b,i)=>{ ctx.fillText('- '+b.title + ' (' + b.points + ' pts)', 100,320 + i*30); });
+  ctx.textAlign='center'; ctx.font='18px serif'; ctx.fillText('Expedido por: Proyecto Viaje Cultural — ' + new Date().toLocaleDateString(), w/2,760);
+  return c.toDataURL('image/png');
+}
+
+// download index.html file
+document.getElementById('downloadHTML').onclick = ()=>{
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'index.html'; a.click();
+};
+
+// initial HUD
+updateHUD();
+
+</script>
+</body>
+</html>
